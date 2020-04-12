@@ -30,8 +30,8 @@ public class UserController {
      */
     @PostMapping("/user")
     public ResponseEntity<User> createUser(@Validated @RequestBody User user) throws UserExistsException {
-        logger.info("CreateUser(user) function execution has started");
-        return ResponseEntity.ok().body(userService.saveUser(user));
+        logger.info("Entering UserController.createUser with parameter user {}.", user.toString());
+        return ResponseEntity.ok().body(userService.createUser(user));
     }
 
     /**
@@ -42,7 +42,7 @@ public class UserController {
      */
     @GetMapping("/users/{id}")
     public ResponseEntity<User> getUserDetailsById(@PathVariable String id) {
-        logger.info("getUserDetailsById(id) function execution has started");
+        logger.info("Entering UserController.getUserDetailsById with parameter id {}.", id);
         return ResponseEntity.ok().body(userService.findUserById(id));
     }
 
@@ -55,7 +55,7 @@ public class UserController {
      */
     @GetMapping("/users")
     public ResponseEntity<User> getUserByUserNameAndPassword(@RequestParam String userName, @RequestParam String password) {
-        logger.info("getUserByUserNameAndPassword(userName, password) function execution has started");
+        logger.info("Entering UserController.getUserByUserNameAndPassword with parameters userName {} and password {}.", userName, password);
         return ResponseEntity.ok().body(userService.findUserByUserNameAndPassword(userName, password).get());
     }
 }

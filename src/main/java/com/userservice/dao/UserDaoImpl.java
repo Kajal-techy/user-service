@@ -15,7 +15,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     /**
-     * We are saving the details in the database
+     * It is saving the details in the database
      *
      * @param user
      * @return User

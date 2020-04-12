@@ -1,0 +1,18 @@
+logging:
+  level:
+    com:
+      userservice: INFO
+    root: INFO
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+server:
+  port: 9098
+spring:
+  data:
+    mongodb:
+      database: test
+      host: localhost
+      port: 27017
