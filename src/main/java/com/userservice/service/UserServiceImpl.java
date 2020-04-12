@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User createUser(User user) throws UserExistsException {
-        logger.info("Entering UserServiceImpl.createUser with parameter user {}.", user.toString());
+        logger.debug("Entering UserServiceImpl.createUser with parameter user {}.", user.toString());
         User existingUser = userDao.findUserByUserName(user.getUserName());
         if (existingUser == null) {
             return userDao.saveUser(user);
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User findUserById(String id) {
-        logger.info("Entering UserServiceImpl.findUserById with parameter id {}.", id);
+        logger.debug("Entering UserServiceImpl.findUserById with parameter id {}.", id);
         Optional<User> user = userDao.findUserById(id);
         if (user.isPresent())
             return user.get();
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public Optional<User> findUserByUserNameAndPassword(String userName, String passsword) {
-        logger.info("Entering UserServiceImpl.findUserByUserNameAndPassword with parameters userName {} and password {}.", userName, passsword);
+        logger.debug("Entering UserServiceImpl.findUserByUserNameAndPassword with parameters userName {} and password {}.", userName, passsword);
         Optional<User> user = userDao.findUserByUserNameAndPassword(userName, passsword);
         if (user.isPresent())
             return user;

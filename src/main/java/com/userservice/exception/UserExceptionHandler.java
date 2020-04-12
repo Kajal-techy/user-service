@@ -13,13 +13,13 @@ public class UserExceptionHandler {
 
     @ExceptionHandler(value = UserExistsException.class)
     public ResponseEntity<String> userExistsException(UserExistsException exception) {
-        logger.info("Entering UserExceptionHandler.userExistsException with parameter exception {}.", exception);
+        logger.debug("Entering UserExceptionHandler.userExistsException with parameter exception {}.", exception);
         return ResponseEntity.badRequest().body(exception.toString());
     }
 
     @ExceptionHandler(value = UserNotFoundException.class)
     public ResponseEntity<String> userNotFoundException(UserNotFoundException exception) {
-        logger.info("Entering UserExceptionHandler.userNotFoundException with parameter exception {}.", exception);
+        logger.debug("Entering UserExceptionHandler.userNotFoundException with parameter exception {}.", exception);
         return ResponseEntity.badRequest().body(exception.toString());
     }
 }
