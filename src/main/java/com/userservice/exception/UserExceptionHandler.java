@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class UserExceptionHandler {
 
-    private static Logger logger = LoggerFactory.getLogger(UserExistsException.class);
+    private static Logger logger = LoggerFactory.getLogger(UserExceptionHandler.class);
 
     @ExceptionHandler(value = UserExistsException.class)
     public ResponseEntity<String> userExistsException(UserExistsException exception) {

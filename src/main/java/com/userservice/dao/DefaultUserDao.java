@@ -11,5 +11,5 @@ public interface DefaultUserDao extends MongoRepository<User, String> {
 
     Optional<User> findByUserNameAndPassword(String userName, String password);
 
-    User findByUserName(String userName);
+    Optional<User> findByUserName(String userName);
 }

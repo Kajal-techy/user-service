@@ -6,6 +6,7 @@ import com.userservice.exception.UserNotFoundException;
 import com.userservice.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -14,10 +15,14 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
     private UserDao userDao;
 
-    public UserServiceImpl(UserDao userDao) {
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    public UserServiceImpl(UserDao userDao, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userDao = userDao;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     /**
@@ -30,11 +35,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUser(User user) throws UserExistsException {
         logger.debug("Entering UserServiceImpl.createUser with parameter user {}.", user.toString());
-        User existingUser = userDao.findUserByUserName(user.getUserName());
-        if (existingUser == null) {
+        Optional<User> existingUser = userDao.findUserByUserName(user.getUserName());
+        if (!existingUser.isPresent()) {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             return userDao.saveUser(user);
         } else
-            throw new UserExistsException("User already exists with userName = " + existingUser.getUserName() );
+            throw new UserExistsException("User already exists with userName = " + existingUser.get().getUserName() );
     }
 
     /**
@@ -63,9 +69,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> findUserByUserNameAndPassword(String userName, String passsword) {
         logger.debug("Entering UserServiceImpl.findUserByUserNameAndPassword with parameters userName {} and password {}.", userName, passsword);
-        Optional<User> user = userDao.findUserByUserNameAndPassword(userName, passsword);
-        if (user.isPresent())
-            return user;
+        Optional<User> user;
+        if ((userName != null) && (passsword != null)) {
+            user = userDao.findUserByUserNameAndPassword(userName, passsword);
+             if (user.isPresent())
+                return user;
+             else
+                 throw new UserNotFoundException("User does not exist with userName =" + userName);
+        }
+        else if ((userName != null) && (passsword == null)) {
+            {
+                user = userDao.findUserByUserName(userName);
+                if (user.isPresent())
+                    return user;
+                else
+                    throw new UserNotFoundException("User does not exist with userName =" + userName);
+            }
+        }
         else
             throw new UserNotFoundException("User does not exist with userName =" + userName);
     }

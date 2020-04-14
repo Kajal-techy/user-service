@@ -54,7 +54,7 @@ public class UserController {
      * @return ResponseEntity<User>
      */
     @GetMapping("/users")
-    public ResponseEntity<User> getUserByUserNameAndPassword(@RequestParam String userName, @RequestParam String password) {
+    public ResponseEntity<User> getUserByUserNameAndPassword(@RequestParam String userName, @RequestParam (required = false) String password) {
         logger.debug("Entering UserController.getUserByUserNameAndPassword with parameters userName {} and password {}.", userName, password);
         return ResponseEntity.ok().body(userService.findUserByUserNameAndPassword(userName, password).get());
     }

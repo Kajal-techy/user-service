@@ -1,7 +1,7 @@
 logging:
   level:
     com:
-      userservice: INFO
+      userservice: DEBUG
     root: INFO
 management:
   endpoints:
@@ -16,3 +16,5 @@ spring:
       database: test
       host: localhost
       port: 27017
+jwt:
+  secret: secretKey
