@@ -24,7 +24,7 @@ public class UserExceptionHandler {
 
     @ExceptionHandler(value = ExpiredJwtException.class)
     public ResponseEntity<String> expiredToken(ExpiredJwtException exception) {
-        log.info("Entering UserExceptionHandler.notFoundException with parameter exception {}.", exception);
+        log.info("Entering UserExceptionHandler.expiredToken with parameter exception {}.", exception);
         return ResponseEntity.badRequest().body(exception.toString());
     }
 }

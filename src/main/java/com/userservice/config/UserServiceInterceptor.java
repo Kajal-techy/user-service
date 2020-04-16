@@ -32,31 +32,26 @@ public class UserServiceInterceptor implements HandlerInterceptor {
             throws Exception {
         log.info("Entering UserServiceInterceptor.preHandle with parameters request {}, response {} and handler {}",
                 request, response, handler);
-        boolean applyThrough = false;
         final String requestTokenHeader = request.getHeader("Authorization");
         String userName = null;
         String jwtToken = null;
         String requestParams = request.getQueryString();
 
-        if (requestParams != null) {
-            if (requestParams.contains("userName") && !requestParams.contains("password"))
-                applyThrough = true;
-        }
+        if ((requestParams != null) && (requestParams.contains("userName")) && (!requestParams.contains("password")))
+            return true;
 
-        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ") && applyThrough == false) {
+        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
             jwtToken = requestTokenHeader.substring(7);
             userName = jwtTokenUtil.getUsernameFromToken(jwtToken);
             if (userName != null) {
                 if (jwtTokenUtil.validateToken(jwtToken))
-                    applyThrough = true;
+                    return true;
             }
         }
 
-        if (applyThrough == false) {
-            response.setContentType("application/json");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getOutputStream().println("{\n" + " error : " + "authentication failure" + "\n }");
-        }
-        return applyThrough;
+        response.setContentType("application/json");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getOutputStream().println("{\n" + " error : " + "authentication failure" + "\n }");
+        return false;
     }
 }

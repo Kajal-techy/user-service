@@ -72,15 +72,11 @@ public class UserServiceImpl implements UserService {
             user = userDao.findUserByUserNameAndPassword(userName, passsword);
             if (user.isPresent())
                 return user;
-            else
-                throw new NotFoundException("User does not exist with userName =" + userName);
         } else if ((userName != null) && (passsword == null)) {
             user = userDao.findUserByUserName(userName);
             if (user.isPresent())
                 return user;
-            else
-                throw new NotFoundException("User does not exist with userName =" + userName);
-        } else
-            throw new NotFoundException("User does not exist with userName =" + userName);
+        }
+        throw new NotFoundException("User does not exist with userName = " + userName);
     }
 }
