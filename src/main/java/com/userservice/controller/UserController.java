@@ -3,18 +3,17 @@ package com.userservice.controller;
 import com.userservice.exception.UserExistsException;
 import com.userservice.model.User;
 import com.userservice.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
 @RestController
+@Slf4j
 @RequestMapping("/v1")
 public class UserController {
 
-    private static Logger logger = LoggerFactory.getLogger(UserController.class);
     private UserService userService;
 
     public UserController(UserService userService) {
@@ -22,7 +21,7 @@ public class UserController {
     }
 
     /**
-     * This function is making a post call for user creation
+     * It is making a post call for user creation
      *
      * @param user
      * @return ResponseEntity<User>
@@ -30,7 +29,7 @@ public class UserController {
      */
     @PostMapping("/user")
     public ResponseEntity<User> createUser(@Validated @RequestBody User user) throws UserExistsException {
-        logger.debug("Entering UserController.createUser with parameter user {}.", user.toString());
+        log.info("Entering UserController.createUser with parameter user {}.", user.toString());
         return ResponseEntity.ok().body(userService.createUser(user));
     }
 
@@ -42,7 +41,7 @@ public class UserController {
      */
     @GetMapping("/users/{id}")
     public ResponseEntity<User> getUserDetailsById(@PathVariable String id) {
-        logger.debug("Entering UserController.getUserDetailsById with parameter id {}.", id);
+        log.info("Entering UserController.getUserDetailsById with parameter id {}.", id);
         return ResponseEntity.ok().body(userService.findUserById(id));
     }
 
@@ -54,8 +53,8 @@ public class UserController {
      * @return ResponseEntity<User>
      */
     @GetMapping("/users")
-    public ResponseEntity<User> getUserByUserNameAndPassword(@RequestParam String userName, @RequestParam String password) {
-        logger.debug("Entering UserController.getUserByUserNameAndPassword with parameters userName {} and password {}.", userName, password);
+    public ResponseEntity<User> getUserByUserNameAndPassword(@RequestParam String userName, @RequestParam(required = false) String password) {
+        log.info("Entering UserController.getUserByUserNameAndPassword with parameters userName {} ", userName);
         return ResponseEntity.ok().body(userService.findUserByUserNameAndPassword(userName, password).get());
     }
 }

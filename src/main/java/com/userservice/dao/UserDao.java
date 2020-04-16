@@ -12,5 +12,5 @@ public interface UserDao {
 
     public Optional<User> findUserByUserNameAndPassword(String userName, String password);
 
-    public User findUserByUserName(String userName);
+    public Optional<User> findUserByUserName(String userName);
 }

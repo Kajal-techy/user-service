@@ -56,7 +56,7 @@ public class UserDaoImpl implements UserDao {
      * @return User
      */
     @Override
-    public User findUserByUserName(String userName) {
+    public Optional<User> findUserByUserName(String userName) {
         return defaultUserDao.findByUserName(userName);
     }
 }
