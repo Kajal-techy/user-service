@@ -2,7 +2,6 @@ package com.userservice.config;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -22,6 +21,7 @@ public class UserInterceptorAppConfig extends WebMvcConfigurerAdapter {
     /**
      * This function add the interceptor class in the registry
      * and also specifies which request will we intercept or not
+     *
      * @param registry
      */
     @Override

@@ -4,8 +4,6 @@ import com.userservice.exception.UserExistsException;
 import com.userservice.model.User;
 import com.userservice.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +22,7 @@ public class UserController {
 
     /**
      * It is making a post call for user creation
+     *
      * @param user
      * @return ResponseEntity<User>
      * @throws UserExistsException
@@ -36,6 +35,7 @@ public class UserController {
 
     /**
      * It will return the user details and will perform the search by Id
+     *
      * @param id
      * @return ResponseEntity<User>
      */
@@ -47,6 +47,7 @@ public class UserController {
 
     /**
      * It will return the user details and perform search by userName and Password
+     *
      * @param userName
      * @param password
      * @return ResponseEntity<User>

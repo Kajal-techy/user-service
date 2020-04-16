@@ -15,7 +15,8 @@ public class TokenValidationUtil {
     private String secret;
 
     /**
-     * this function retrieve username from jwt token
+     * This function retrieve username from jwt token
+     *
      * @param token
      * @return String
      */
@@ -25,6 +26,7 @@ public class TokenValidationUtil {
 
     /**
      * This function retrieve expiration date from jwt token
+     *
      * @param token
      * @return String
      */
@@ -39,6 +41,7 @@ public class TokenValidationUtil {
 
     /**
      * This function is retrieving any information from token we will need the secret key
+     *
      * @param token
      * @return Claims
      */
@@ -48,6 +51,7 @@ public class TokenValidationUtil {
 
     /**
      * This function check if the token has expired
+     *
      * @param token
      * @return Boolean
      */

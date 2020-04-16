@@ -1,12 +1,10 @@
 package com.userservice.service;
 
 import com.userservice.dao.UserDao;
+import com.userservice.exception.NotFoundException;
 import com.userservice.exception.UserExistsException;
-import com.userservice.exception.UserNotFoundException;
 import com.userservice.model.User;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +54,7 @@ public class UserServiceImpl implements UserService {
         if (user.isPresent())
             return user.get();
         else
-            throw new UserNotFoundException("User does not exist with id = " + id);
+            throw new NotFoundException("User does not exist with id = " + id);
     }
 
     /**
@@ -75,16 +73,14 @@ public class UserServiceImpl implements UserService {
             if (user.isPresent())
                 return user;
             else
-                throw new UserNotFoundException("User does not exist with userName =" + userName);
+                throw new NotFoundException("User does not exist with userName =" + userName);
         } else if ((userName != null) && (passsword == null)) {
-            {
-                user = userDao.findUserByUserName(userName);
-                if (user.isPresent())
-                    return user;
-                else
-                    throw new UserNotFoundException("User does not exist with userName =" + userName);
-            }
+            user = userDao.findUserByUserName(userName);
+            if (user.isPresent())
+                return user;
+            else
+                throw new NotFoundException("User does not exist with userName =" + userName);
         } else
-            throw new UserNotFoundException("User does not exist with userName =" + userName);
+            throw new NotFoundException("User does not exist with userName =" + userName);
     }
 }
