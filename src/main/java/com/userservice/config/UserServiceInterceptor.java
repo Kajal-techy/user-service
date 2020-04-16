@@ -33,16 +33,15 @@ public class UserServiceInterceptor implements HandlerInterceptor {
         log.info("Entering UserServiceInterceptor.preHandle with parameters request {}, response {} and handler {}",
                 request, response, handler);
         final String requestTokenHeader = request.getHeader("Authorization");
-        String userName = null;
-        String jwtToken = null;
+
         String requestParams = request.getQueryString();
 
         if ((requestParams != null) && (requestParams.contains("userName")) && (!requestParams.contains("password")))
             return true;
 
         if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
-            jwtToken = requestTokenHeader.substring(7);
-            userName = jwtTokenUtil.getUsernameFromToken(jwtToken);
+            String jwtToken = requestTokenHeader.substring(7);
+            String userName = jwtTokenUtil.getUsernameFromToken(jwtToken);
             if (userName != null) {
                 if (jwtTokenUtil.validateToken(jwtToken))
                     return true;
