@@ -24,6 +24,10 @@ public class TokenValidationUtil {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
+    public String getIdfromToken(String token) {
+        return getClaimFromToken(token, Claims::getId);
+    }
+
     /**
      * This function retrieve expiration date from jwt token
      *

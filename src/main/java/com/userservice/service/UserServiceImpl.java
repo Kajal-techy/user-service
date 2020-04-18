@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -32,13 +33,18 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User createUser(User user) throws UserExistsException {
-        log.info("Entering UserServiceImpl.createUser with parameter user {}.", user.toString());
-        Optional<User> existingUser = userDao.findUserByUserName(user.getUserName());
-        if (!existingUser.isPresent()) {
+        log.info("Entering UserServiceImpl.createUser with parameter user {}", user.toString());
+        User existingUser = null;
+        try {
+            existingUser = userDao.findUserByUserName(user.getUserName());
+        } catch (NotFoundException exception) {
+            log.info("UserServiceImpl.createUser exception : {} encountered", exception.getMessage());
+        }
+        if (existingUser == null) {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             return userDao.saveUser(user);
         } else
-            throw new UserExistsException("User already exists with userName = " + existingUser.get().getUserName());
+            throw new UserExistsException("User already exists with userName = " + existingUser.getUserName());
     }
 
     /**
@@ -48,12 +54,13 @@ public class UserServiceImpl implements UserService {
      * @return User
      */
     @Override
-    public User findUserById(String id) {
-        log.info("Entering UserServiceImpl.findUserById with parameter id {}.", id);
+    public User findUserById(String id, String loggedInUserId) {
+        log.info("Entering UserServiceImpl.findUserById with parameter id {}", id);
         Optional<User> user = userDao.findUserById(id);
-        if (user.isPresent())
-            return user.get();
-        else
+        if (user.isPresent()) {
+            List<User> users = this.hideOtherUsersData(List.of(user.get()), loggedInUserId);
+            return (users.get(0));
+        } else
             throw new NotFoundException("User does not exist with id = " + id);
     }
 
@@ -61,22 +68,27 @@ public class UserServiceImpl implements UserService {
      * This function is calling dao for getting the user details by username and password
      *
      * @param userName
-     * @param passsword
      * @return Optional<User>
      */
     @Override
-    public Optional<User> findUserByUserNameAndPassword(String userName, String passsword) {
-        log.info("Entering UserServiceImpl.findUserByUserNameAndPassword with parameters userName {} and password.", userName);
-        Optional<User> user;
-        if ((userName != null) && (passsword != null)) {
-            user = userDao.findUserByUserNameAndPassword(userName, passsword);
-            if (user.isPresent())
-                return user;
-        } else if ((userName != null) && (passsword == null)) {
-            user = userDao.findUserByUserName(userName);
-            if (user.isPresent())
-                return user;
+    public List<User> getUsers(String userName, String loggedInUserId) {
+        log.info("Entering UserServiceImpl.getUsers with parameters userName {}", userName);
+        List<User> users;
+        if ((userName != null)) {
+            users = List.of(userDao.findUserByUserName(userName));
+            loggedInUserId = users.get(0).getId();
+        } else {
+            users = userDao.findAllUsers();
         }
-        throw new NotFoundException("User does not exist with userName = " + userName);
+        return this.hideOtherUsersData(users, loggedInUserId);
+    }
+
+    public List<User> hideOtherUsersData(List<User> users, String loggedInUserId) {
+        users.forEach(user -> {
+            if (!user.getId().equals(loggedInUserId)) {
+                user.setPassword("**REDACTED**");
+                user.setAddress(null);
+            } });
+        return users;
     }
 }
