@@ -48,7 +48,6 @@ public class UserServiceInterceptor implements HandlerInterceptor {
                 if (jwtTokenUtil.validateToken(jwtToken)) {
                     request.setAttribute("id", id);
                     request.setAttribute("userName", userName);
-                    log.info("Inyterceptor id : {}, userName : {}", request.getAttribute("id"), request.getAttribute("userName"));
                     return true;
                 }
             }

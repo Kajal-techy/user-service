@@ -43,8 +43,8 @@ public class UserServiceImpl implements UserService {
         if (existingUser == null) {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             return userDao.saveUser(user);
-        } else
-            throw new UserExistsException("User already exists with userName = " + existingUser.getUserName());
+        }
+        throw new UserExistsException("User already exists with userName = " + existingUser.getUserName());
     }
 
     /**
@@ -60,8 +60,8 @@ public class UserServiceImpl implements UserService {
         if (user.isPresent()) {
             List<User> users = this.hideOtherUsersData(List.of(user.get()), loggedInUserId);
             return (users.get(0));
-        } else
-            throw new NotFoundException("User does not exist with id = " + id);
+        }
+        throw new NotFoundException("User does not exist with id = " + id);
     }
 
     /**
