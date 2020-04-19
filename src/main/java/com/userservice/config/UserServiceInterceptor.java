@@ -44,12 +44,9 @@ public class UserServiceInterceptor implements HandlerInterceptor {
             String jwtToken = requestTokenHeader.substring(7);
             String userName = jwtTokenUtil.getUsernameFromToken(jwtToken);
             String id = jwtTokenUtil.getIdfromToken(jwtToken);
-            if (userName != null && id != null) {
-                if (jwtTokenUtil.validateToken(jwtToken)) {
-                    request.setAttribute("id", id);
-                    request.setAttribute("userName", userName);
-                    return true;
-                }
+            if (userName != null && id != null && (jwtTokenUtil.validateToken(jwtToken))) {
+                request.setAttribute("id", id);
+                return true;
             }
         }
 

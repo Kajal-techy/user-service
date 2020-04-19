@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User findUserById(String id, String loggedInUserId) {
-        log.info("Entering UserServiceImpl.findUserById with parameter id {}", id);
+        log.info("Entering UserServiceImpl.findUserById with parameter id {} and loggedInUserId {}", id, loggedInUserId);
         Optional<User> user = userDao.findUserById(id);
         if (user.isPresent()) {
             List<User> users = this.hideOtherUsersData(List.of(user.get()), loggedInUserId);
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public List<User> getUsers(String userName, String loggedInUserId) {
-        log.info("Entering UserServiceImpl.getUsers with parameters userName {}", userName);
+        log.info("Entering UserServiceImpl.getUsers with parameters userName {} and loggedInUserId {}", userName, loggedInUserId);
         List<User> users;
         if ((userName != null)) {
             users = List.of(userDao.findUserByUserName(userName));
@@ -88,7 +88,8 @@ public class UserServiceImpl implements UserService {
             if (!user.getId().equals(loggedInUserId)) {
                 user.setPassword("**REDACTED**");
                 user.setAddress(null);
-            } });
+            }
+        });
         return users;
     }
 }

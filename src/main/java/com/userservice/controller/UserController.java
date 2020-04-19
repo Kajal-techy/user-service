@@ -1,6 +1,6 @@
 package com.userservice.controller;
 
-import com.userservice.exception.InvalidValue;
+import com.userservice.exception.ForbiddenRequest;
 import com.userservice.exception.UserExistsException;
 import com.userservice.model.User;
 import com.userservice.service.UserService;
@@ -47,8 +47,8 @@ public class UserController {
     public ResponseEntity<User> getUserDetailsById(@PathVariable String id, HttpServletRequest request) {
         log.info("Entering UserController.getUserDetailsById with parameter id {}, userName {}", id, request.getAttribute("userName"));
         if (request.getAttribute("id") != null)
-            return ResponseEntity.ok().body(userService.findUserById((id), request.getAttribute("id").toString()));
-        throw new InvalidValue("Invalid value for id = " + request.getAttribute("id"));
+            return ResponseEntity.ok().body(userService.findUserById((id), (String) request.getAttribute("id")));
+        throw new ForbiddenRequest("Authentication token did not have loggedInUser's Id = " + request.getAttribute("id"));
     }
 
     /**
@@ -60,6 +60,6 @@ public class UserController {
     @GetMapping("/users")
     public ResponseEntity<List<User>> getUsers(@RequestParam(required = false) String userName, HttpServletRequest request) {
         log.info("Entering UserController.getUsers with parameters userName {}", userName);
-        return ResponseEntity.ok().body(userService.getUsers(userName, (String)request.getAttribute("id")));
+        return ResponseEntity.ok().body(userService.getUsers(userName, (String) request.getAttribute("id")));
     }
 }
