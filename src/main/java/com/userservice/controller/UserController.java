@@ -45,10 +45,10 @@ public class UserController {
      */
     @GetMapping("/users/{id}")
     public ResponseEntity<User> getUserDetailsById(@PathVariable String id, HttpServletRequest request) {
-        log.info("Entering UserController.getUserDetailsById with parameter id {}, userName {}", id, request.getAttribute("userName"));
+        log.info("Entering UserController.getUserDetailsById with parameter id {}", id);
         if (request.getAttribute("id") != null)
             return ResponseEntity.ok().body(userService.findUserById((id), (String) request.getAttribute("id")));
-        throw new ForbiddenRequest("Authentication token did not have loggedInUser's Id = " + request.getAttribute("id"));
+        throw new ForbiddenRequest("Authentication token did not have loggedInUser's Id");
     }
 
     /**
