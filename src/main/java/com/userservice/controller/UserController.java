@@ -1,5 +1,6 @@
 package com.userservice.controller;
 
+import com.userservice.exception.ForbiddenRequest;
 import com.userservice.exception.UserExistsException;
 import com.userservice.model.User;
 import com.userservice.service.UserService;
@@ -7,6 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 
 @RestController
@@ -40,21 +44,22 @@ public class UserController {
      * @return ResponseEntity<User>
      */
     @GetMapping("/users/{id}")
-    public ResponseEntity<User> getUserDetailsById(@PathVariable String id) {
-        log.info("Entering UserController.getUserDetailsById with parameter id {}.", id);
-        return ResponseEntity.ok().body(userService.findUserById(id));
+    public ResponseEntity<User> getUserDetailsById(@PathVariable String id, HttpServletRequest request) {
+        log.info("Entering UserController.getUserDetailsById with parameter id {}", id);
+        if (request.getAttribute("id") != null)
+            return ResponseEntity.ok().body(userService.findUserById((id), (String) request.getAttribute("id")));
+        throw new ForbiddenRequest("Authentication token did not have loggedInUser's Id");
     }
 
     /**
      * It will return the user details and perform search by userName and Password
      *
      * @param userName
-     * @param password
      * @return ResponseEntity<User>
      */
     @GetMapping("/users")
-    public ResponseEntity<User> getUserByUserNameAndPassword(@RequestParam String userName, @RequestParam(required = false) String password) {
-        log.info("Entering UserController.getUserByUserNameAndPassword with parameters userName {} ", userName);
-        return ResponseEntity.ok().body(userService.findUserByUserNameAndPassword(userName, password).get());
+    public ResponseEntity<List<User>> getUsers(@RequestParam(required = false) String userName, HttpServletRequest request) {
+        log.info("Entering UserController.getUsers with parameters userName {}", userName);
+        return ResponseEntity.ok().body(userService.getUsers(userName, (String) request.getAttribute("id")));
     }
 }

@@ -1,10 +1,14 @@
 package com.userservice.dao;
 
+import com.userservice.exception.NotFoundException;
 import com.userservice.model.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Repository
 public class UserDaoImpl implements UserDao {
 
@@ -34,6 +38,7 @@ public class UserDaoImpl implements UserDao {
      */
     @Override
     public Optional<User> findUserById(String id) {
+        log.info("Entering UserDaoImpl.findById with parameter id {}", id);
         return defaultUserDao.findById(id);
     }
 
@@ -45,8 +50,12 @@ public class UserDaoImpl implements UserDao {
      * @return Optional<User>
      */
     @Override
-    public Optional<User> findUserByUserNameAndPassword(String userName, String password) {
-        return defaultUserDao.findByUserNameAndPassword(userName, password);
+    public User findUserByUserNameAndPassword(String userName, String password) {
+        log.info("Entering UserDaoImpl.findUserByUserNameAndPassword with parameters userName {}", userName);
+        Optional<User> user = defaultUserDao.findByUserNameAndPassword(userName, password);
+        if (user.isPresent())
+            return user.get();
+        throw new NotFoundException("User not found with userName =  " + userName);
     }
 
     /**
@@ -56,7 +65,18 @@ public class UserDaoImpl implements UserDao {
      * @return User
      */
     @Override
-    public Optional<User> findUserByUserName(String userName) {
-        return defaultUserDao.findByUserName(userName);
+    public User findUserByUserName(String userName) {
+        log.info("Entering UserDaoImpl.findUserByUserName with parameter userName {}", userName);
+        Optional<User> user = defaultUserDao.findByUserName(userName);
+        if (user.isPresent())
+            return user.get();
+        throw new NotFoundException("User does not exist with userName = " + userName);
+    }
+
+    @Override
+    public List<User> findAllUsers() {
+        log.info("Entering UserDaoImpl.findAllUsers");
+        List<User> users = defaultUserDao.findAll();
+        return users;
     }
 }

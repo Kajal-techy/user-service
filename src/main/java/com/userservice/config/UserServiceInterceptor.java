@@ -30,21 +30,23 @@ public class UserServiceInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
-        log.info("Entering UserServiceInterceptor.preHandle with parameters request {}, response {} and handler {}",
-                request, response, handler);
+        log.info("Entering UserServiceInterceptor.preHandle with parameters method = {}, URI = {} and handler = {}",
+                request.getMethod(), request.getRequestURI(), handler.toString());
+
         final String requestTokenHeader = request.getHeader("Authorization");
 
         String requestParams = request.getQueryString();
 
-        if ((requestParams != null) && (requestParams.contains("userName")) && (!requestParams.contains("password")))
+        if ((requestParams != null) && (requestParams.contains("userName")))
             return true;
 
         if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
             String jwtToken = requestTokenHeader.substring(7);
             String userName = jwtTokenUtil.getUsernameFromToken(jwtToken);
-            if (userName != null) {
-                if (jwtTokenUtil.validateToken(jwtToken))
-                    return true;
+            String id = jwtTokenUtil.getIdfromToken(jwtToken);
+            if (userName != null && id != null && (jwtTokenUtil.validateToken(jwtToken))) {
+                request.setAttribute("id", id);
+                return true;
             }
         }
 
