@@ -76,7 +76,9 @@ public class UserServiceImpl implements UserService {
         List<User> users;
         if ((userName != null)) {
             users = List.of(userDao.findUserByUserName(userName));
-            loggedInUserId = users.get(0).getId();
+            if (loggedInUserId == null) {
+                loggedInUserId = users.get(0).getId();
+            }
         } else {
             users = userDao.findAllUsers();
         }

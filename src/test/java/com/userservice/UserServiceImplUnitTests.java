@@ -55,14 +55,14 @@ public class UserServiceImplUnitTests {
     }
 
     @Test(expected = UserExistsException.class)
-    public void createUserIfUserExists() {
+    public void createUserAndThrowErrorIfUserExists() {
         when(userDaoMock.findUserByUserName(user.getUserName())).thenReturn(user);
         when(userDaoMock.saveUser(user)).thenThrow(UserExistsException.class);
         userServiceImpl.createUser(user);
     }
 
     @Test
-    public void createUserIfUserExistsErrorMessage() {
+    public void createUserAndVerifyExistsErrorMessage() {
         Exception exception = null;
         when(userDaoMock.findUserByUserName(user.getUserName())).thenReturn(user);
         try {
@@ -76,14 +76,14 @@ public class UserServiceImplUnitTests {
     }
 
     @Test
-    public void findUserByIdTestWithSuccess() {
+    public void findUserByIdWithSuccess() {
         when(userDaoMock.findUserById(user.getId())).thenReturn(Optional.of(user));
         User fetchedUser = userServiceImpl.findUserById(user.getId(), user.getId());
         Assert.assertEquals(fetchedUser, user);
     }
 
     @Test
-    public void findUserByIdTestIfLoggedInUserIdIsDifferent() {
+    public void findUserByIdIfLoggedInUserIdIsDifferent() {
         when(userDaoMock.findUserById(otherUser.getId())).thenReturn(Optional.of(otherUser));
         User fetchedUser = userServiceImpl.findUserById(otherUser.getId(), user.getId());
         otherUser.setAddress(null);
@@ -92,12 +92,12 @@ public class UserServiceImplUnitTests {
     }
 
     @Test
-    public void findUserByIdTestIfUserNotExists() {
+    public void findUserByIdAndThrowErrorIfUserNotExists() {
         Exception exception = null;
         String nonExistId = "12";
         when(userDaoMock.findUserById(nonExistId)).thenReturn(Optional.empty());
         try {
-            User fetchedUser = userServiceImpl.findUserById(nonExistId, user.getId());
+            userServiceImpl.findUserById(nonExistId, user.getId());
         } catch (Exception ex) {
             exception = ex;
         }
@@ -107,49 +107,59 @@ public class UserServiceImplUnitTests {
     }
 
     @Test
-    public void getUsersTestIfLoggedInUserIdIsSameAndSearchByUserName() {
+    public void getUsersIfLoggedInUserIdIsSameAndSearchByUserName() {
         when(userDaoMock.findUserByUserName(user.getUserName())).thenReturn(user);
         List<User> fetchedUsers = userServiceImpl.getUsers(user.getUserName(), user.getId());
         Assert.assertNotNull(fetchedUsers);
         Assert.assertEquals(1, fetchedUsers.size());
-        Assert.assertArrayEquals(fetchedUsers.toArray(), Arrays.array(user));
+        Assert.assertEquals(fetchedUsers, List.of(user));
     }
 
     @Test
-    public void getUsersTestIfLoggedInUserIdIsDiffAndSearchByUserName() {
+    public void getUsersIfLoggedInUserIdIsDiffAndSearchByUserName() {
         when(userDaoMock.findUserByUserName(user.getUserName())).thenReturn(user);
-        List<User> fetchedUsers = userServiceImpl.getUsers(user.getUserName(), user.getId());
+        List<User> fetchedUsers = userServiceImpl.getUsers(user.getUserName(), otherUser.getId());
         Assert.assertNotNull(fetchedUsers);
-        user.setAddress(null);
-        user.setPassword("**REDACTED**");
-        Assert.assertArrayEquals(fetchedUsers.toArray(), Arrays.array(user));
+        User userClone = (User) user.clone();
+        userClone.setAddress(null);
+        userClone.setPassword("**REDACTED**");
+        Assert.assertEquals(fetchedUsers, List.of(userClone));
     }
 
     @Test
-    public void getUsersTestIfLoggedInUserIdIsSameAndSearchByAll() {
+    public void getUsersIfLoggedInUserIdIsNullAndSearchByUserName() {
+        when(userDaoMock.findUserByUserName(user.getUserName())).thenReturn(user);
+        List<User> fetchedUsers = userServiceImpl.getUsers(user.getUserName(), null);
+        Assert.assertNotNull(fetchedUsers);
+        User userClone = (User) user.clone();
+        Assert.assertEquals(fetchedUsers, List.of(userClone));
+    }
+
+    @Test
+    public void getUsersIfLoggedInUserIdIsSameAndSearchByAll() {
         when(userDaoMock.findAllUsers()).thenReturn(List.of(user));
         List<User> fetchedUsers = userServiceImpl.getUsers(null, user.getId());
         Assert.assertNotNull(fetchedUsers);
-        Assert.assertArrayEquals(fetchedUsers.toArray(), Arrays.array(user));
+        Assert.assertEquals(fetchedUsers, List.of(user));
     }
 
     @Test
-    public void getUsersTestIfLoggedInUserIdIsDiffAndSearchByAll() {
+    public void getUsersIfLoggedInUserIdIsDiffAndSearchByAll() {
         when(userDaoMock.findAllUsers()).thenReturn(List.of(user));
-        List<User> fetchedUsers = userServiceImpl.getUsers(null, user.getId());
+        List<User> fetchedUsers = userServiceImpl.getUsers(null, otherUser.getId());
+        User userClone = (User) user.clone();
         Assert.assertNotNull(fetchedUsers);
-        Assert.assertEquals(1, fetchedUsers.size());
-        user.setAddress(null);
-        user.setPassword("**REDACTED**");
-        Assert.assertArrayEquals(fetchedUsers.toArray(), Arrays.array(user));
+        userClone.setAddress(null);
+        userClone.setPassword("**REDACTED**");
+        Assert.assertArrayEquals(fetchedUsers.toArray(), Arrays.array(userClone));
     }
 
     @Test
-    public void getUsersTestIfUserNotFoundByUserName() {
+    public void getUsersAndThrowErrorIfUserNotFoundByUserName() {
         Exception exception = null;
         when(userDaoMock.findUserByUserName(otherUser.getUserName())).thenThrow(new NotFoundException("User does not exist with userName = " + otherUser.getUserName()));
         try {
-            List<User> fetchedUsers = userServiceImpl.getUsers(otherUser.getUserName(), user.getId());
+            userServiceImpl.getUsers(otherUser.getUserName(), user.getId());
         } catch (Exception ex) {
             exception = ex;
         }
@@ -159,11 +169,11 @@ public class UserServiceImplUnitTests {
     }
 
     @Test
-    public void getUsersTestIfNoUserExists() {
+    public void getUsersAndReturnEmptyListIfNoUserExists() {
         when(userDaoMock.findAllUsers()).thenReturn(List.of());
         List<User> fetchedUsers = userServiceImpl.getUsers(null, user.getId());
         Assert.assertNotNull(fetchedUsers);
         Assert.assertEquals(0, fetchedUsers.size());
-        Assert.assertArrayEquals(fetchedUsers.toArray(), Arrays.array());
+        Assert.assertEquals(fetchedUsers, List.of());
     }
 }

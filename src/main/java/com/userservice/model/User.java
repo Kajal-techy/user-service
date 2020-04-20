@@ -11,7 +11,7 @@ import org.springframework.lang.NonNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document
-public class User {
+public class User implements Cloneable {
 
     @Id
     private String id;
@@ -29,4 +29,13 @@ public class User {
     private String password;
 
     private Address address;
+
+    @Override
+    public Object clone() {
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException ignored) {
+        }
+        return null;
+    }
 }
