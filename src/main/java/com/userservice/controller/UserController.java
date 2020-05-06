@@ -41,6 +41,7 @@ public class UserController {
      * It will return the user details and will perform the search by Id
      *
      * @param id
+     * @param request
      * @return ResponseEntity<User>
      */
     @GetMapping("/users/{id}")
@@ -55,6 +56,7 @@ public class UserController {
      * It will return the user details and perform search by userName and Password
      *
      * @param userName
+     * @param request
      * @return ResponseEntity<User>
      */
     @GetMapping("/users")
