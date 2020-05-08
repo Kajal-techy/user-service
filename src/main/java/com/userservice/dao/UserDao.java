@@ -7,13 +7,13 @@ import java.util.Optional;
 
 public interface UserDao {
 
-    public User saveUser(User user);
+    User saveUser(User user);
 
-    public Optional<User> findUserById(String id);
+    Optional<User> findUserById(String id);
 
-    public User findUserByUserNameAndPassword(String userName, String password);
+    User findUserByUserNameAndPassword(String userName, String password);
 
-    public User findUserByUserName(String userName);
+    User findUserByUserName(String userName);
 
-    public List<User> findAllUsers();
+    List<User> findAllUsers();
 }

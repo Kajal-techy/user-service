@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface UserService {
 
-    public User createUser(User user) throws UserExistsException;
+    User createUser(User user) throws UserExistsException;
 
-    public User findUserById(String id, String loggedInUserId) throws NotFoundException;
+    User findUserById(String s, String id) throws NotFoundException;
 
-    public List<User> getUsers(String userName, String loggedInUserId) throws NotFoundException;
+    List<User> getUsers(String userName, String loggedInUserId) throws NotFoundException;
 }
