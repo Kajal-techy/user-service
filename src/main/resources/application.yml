@@ -16,5 +16,14 @@ spring:
       database: test
       host: localhost
       port: 27017
+  application:
+    name: user-service
 jwt:
   secret: secretKey
+#Eureka Client configuartion
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    instanceId: ${spring.application.name}

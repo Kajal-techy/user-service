@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public class UserDaoImpl implements UserDao {
 
-    private DefaultUserDao defaultUserDao;
+    private final DefaultUserDao defaultUserDao;
 
     public UserDaoImpl(DefaultUserDao defaultUserDao) {
         this.defaultUserDao = defaultUserDao;

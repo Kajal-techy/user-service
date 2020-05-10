@@ -16,9 +16,10 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequestMapping("/v1")
+@CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -41,14 +42,14 @@ public class UserController {
      * It will return the user details and will perform the search by Id
      *
      * @param id
-     * @param request
+     * @param loggedInUserId
      * @return ResponseEntity<User>
      */
     @GetMapping("/users/{id}")
-    public ResponseEntity<User> getUserDetailsById(@PathVariable String id, HttpServletRequest request) {
+    public ResponseEntity<User> getUserDetailsById(@PathVariable String id, @RequestHeader String loggedInUserId) {
         log.info("Entering UserController.getUserDetailsById with parameter id {}", id);
-        if (request.getAttribute("id") != null)
-            return ResponseEntity.ok().body(userService.findUserById((id), (String) request.getAttribute("id")));
+        if (loggedInUserId != null)
+            return ResponseEntity.ok().body(userService.findUserById((id), loggedInUserId));
         throw new ForbiddenRequest("Authentication token did not have loggedInUser's Id");
     }
 
