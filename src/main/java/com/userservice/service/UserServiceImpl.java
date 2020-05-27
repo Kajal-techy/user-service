@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
         try {
             existingUser = userDao.findUserByUserName(user.getUserName());
         } catch (NotFoundException exception) {
-            log.info("UserServiceImpl.createUser exception : {} encountered", exception.getMessage());
+            log.info("UserServiceImpl.createUser  : {} existing user not found. Create one.", exception.getMessage());
         }
         if (existingUser == null) {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
