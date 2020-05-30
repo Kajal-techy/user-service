@@ -5,6 +5,7 @@ import com.userservice.exception.UserExistsException;
 import com.userservice.model.User;
 import com.userservice.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +36,9 @@ public class UserController {
     @PostMapping("/user")
     public ResponseEntity<User> createUser(@Validated @RequestBody User user) throws UserExistsException {
         log.info("Entering UserController.createUser with parameter user {}.", user.toString());
-        return ResponseEntity.ok().body(userService.createUser(user));
+        User createdUser = userService.createUser(user);
+        log.info("Created user with userId {}", createdUser.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     /**
