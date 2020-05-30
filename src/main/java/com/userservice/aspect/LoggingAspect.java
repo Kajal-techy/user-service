@@ -17,13 +17,13 @@ public class LoggingAspect {
         long startTime = System.currentTimeMillis();
         Object response = jointpoint.proceed();
         long timeTaken = System.currentTimeMillis() - startTime;
-        log.info("Existing from {}.{} with return value {} and total time: {}", jointpoint.getTarget().getClass().getSimpleName(), jointpoint.getSignature().getName(), response, timeTaken);
+        log.info("Exiting from {}.{} with return value {} and total time: {}", jointpoint.getTarget().getClass().getSimpleName(), jointpoint.getSignature().getName(), response, timeTaken);
         return response;
     }
 
     @AfterThrowing (pointcut = "execution(* com.userservice.controller.UserController.*(..)) || execution(* com.userservice.service.UserServiceImpl.*(..))", throwing = "ex")
     public void printException(JoinPoint jointpoint, Exception ex) throws Throwable
     {
-        log.info("Existing from {}.{} with exception {} ", jointpoint.getTarget().getClass().getSimpleName(), jointpoint.getSignature().getName(), ex.toString());
+        log.info("Exiting from {}.{} with exception {} ", jointpoint.getTarget().getClass().getSimpleName(), jointpoint.getSignature().getName(), ex.toString());
     }
 }
