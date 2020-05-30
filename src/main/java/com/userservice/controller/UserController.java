@@ -4,6 +4,9 @@ import com.userservice.exception.ForbiddenRequest;
 import com.userservice.exception.UserExistsException;
 import com.userservice.model.User;
 import com.userservice.service.UserService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +36,12 @@ public class UserController {
      * @return ResponseEntity<User>
      * @throws UserExistsException
      */
+    @ApiOperation(value = "enter product details", response = User.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successfully aaded"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
     @PostMapping("/user")
     public ResponseEntity<User> createUser(@Validated @RequestBody User user) throws UserExistsException {
         log.info("Entering UserController.createUser with parameter user {}.", user.toString());
@@ -48,6 +57,12 @@ public class UserController {
      * @param loggedInUserId
      * @return ResponseEntity<User>
      */
+    @ApiOperation(value = "Get user details by Id", response = User.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "User Details will come"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
     @GetMapping("/users/{id}")
     public ResponseEntity<User> getUserDetailsById(@PathVariable String id, @RequestHeader String loggedInUserId) {
         log.info("Entering UserController.getUserDetailsById with parameter id {}", id);
@@ -63,6 +78,12 @@ public class UserController {
      * @param request
      * @return ResponseEntity<User>
      */
+    @ApiOperation(value = "get User Details by userName", response = User.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "User Details will come"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
     @GetMapping("/users")
     public ResponseEntity<List<User>> getUsers(@RequestParam(required = false) String userName, HttpServletRequest request) {
         log.info("Entering UserController.getUsers with parameters userName {}", userName);
